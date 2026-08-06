@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Meeting Assistant - Yapay Zeka Toplantı Asistanı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+
+<body>
+    <!-- Top Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="logo-icon"><i class="fa-solid fa-robot"></i></div>
+            <div>
+                <h1>AI Meeting Assistant</h1>
+                <span class="subtitle">Kurumsal Toplantı ve Karar Destek Platformu</span>
+            </div>
+        </div>
+
+        <div class="header-actions" style="display:flex; align-items:center; gap:1rem;">
+            <div class="lan-badge" id="lanBadge" title="Yerel Ağ (LAN) Servis Portu">
+                <i class="fa-solid fa-network-wired"></i>
+                <span id="lanIpText">Port: 3000 (LAN Aktif)</span>
+            </div>
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="Açık / Koyu Tema Geçişi">
+                <i class="fa-solid fa-sun" id="themeIcon"></i>
+                <span id="themeText">Açık Tema</span>
+            </button>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="analyze"><i class="fa-solid fa-wand-magic-sparkles"></i> Toplantı Analizi & AI Sohbet</button>
+            <button class="tab-btn" data-tab="database"><i class="fa-solid fa-database"></i> Kayıtlı Veriler (<span
+                    id="meetingCount">0</span>)</button>
+            <button class="tab-btn" data-tab="status"><i class="fa-solid fa-server"></i> Servis Durumu</button>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- ======================================================== -->
+        <!-- TAB 1: TOPLANTI ANALİZİ -->
+        <!-- ======================================================== -->
+        <section id="tab-analyze" class="tab-content active">
+            <div class="grid-2col">
+                <!-- Left Input Panel -->
+                <div class="card input-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-file-pen"></i> Toplantı Notları Girişi</h2>
+                    </div>
+
+                    <div class="form-row-2col">
+                        <div class="form-group" style="flex: 2;">
+                            <label for="meetingTitle">Toplantı Başlığı</label>
+                            <input type="text" id="meetingTitle" placeholder="Örn: Haftalık Sürüm & Mimari Değerlendirme" value="">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="meetingCategory"><i class="fa-solid fa-tag"></i> Kategori / Etiket</label>
+                            <select id="meetingCategory" class="custom-select">
+                                <option value="Genel">📌 Genel</option>
+                                <option value="Yazılım">💻 Yazılım & Mimari</option>
+                                <option value="Pazarlama">📢 Pazarlama & Satış</option>
+                                <option value="Siber Güvenlik">🛡️ Siber Güvenlik</option>
+                                <option value="Yönetim">👔 Yönetim & Strateji</option>
+                                <option value="İnsan Kaynakları">👥 İnsan Kaynakları</option>
+                                <option value="Bütçe & Finans">💰 Bütçe & Finans</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meetingNotes">Toplantı Notları</label>
+                        <div class="example-loader">
+                            <span class="example-label"><i class="fa-solid fa-flask"></i> Örnek Yükle:</span>
+                            <button class="btn-example" data-example="1">📌 1: Mobil & Altyapı</button>
+                            <button class="btn-example" data-example="2">📌 2: Yapay Zeka Botu</button>
+                            <button class="btn-example" data-example="3">📌 3: Güvenlik & ISO</button>
+                            <button class="btn-example" data-example="4">📌 4: Satış & Bütçe (Ham Not)</button>
+                            <button class="btn-example" data-example="5">📌 5: Lansman Kriz (Doğal Not)</button>
+                        </div>
+                        <textarea id="meetingNotes" rows="12"
+                            placeholder="Toplantı detaylarını buraya yapıştırın veya yukarıdan örnek yükleyin..."></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-full" id="btnProcessAll">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> TÜMÜNÜ ANALİZ ET
+                        </button>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-twoline" id="btnSummarize">
+                                <i class="fa-solid fa-align-left"></i>
+                                <span>Toplantı<br>Özeti</span>
+                            </button>
+                            <button class="btn btn-secondary btn-twoline" id="btnTasks">
+                                <i class="fa-solid fa-list-check"></i>
+                                <span>Görev<br>Analizi</span>
+                            </button>
+                            <button class="btn btn-secondary btn-twoline" id="btnRisks">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Risk<br>Analizi</span>
+                            </button>
+                            <button class="btn btn-secondary btn-twoline" id="btnExec">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <span>Yönetici<br>Özeti</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Results Display Panel -->
+                <div class="card results-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-square-poll-vertical"></i> Yapay Zeka Çıktıları</h2>
+                        <div class="header-right-actions">
+                            <span class="edit-hint"><i class="fa-solid fa-pen-to-square"></i> Çıktıları Tıklayıp Düzenleyebilirsiniz</span>
+                            <div class="status-indicator" id="aiStatus"><i class="fa-solid fa-circle-check"></i> Hazır</div>
+                        </div>
+                    </div>
+
+                    <div class="results-container">
+                        <!-- Summary Output -->
+                        <div class="result-block" id="blockSummary">
+                            <div class="block-header">
+                                <h3><i class="fa-solid fa-file-text"></i> Toplantı Özeti</h3>
+                                <button class="btn-icon-redo" onclick="runSingleTask('summarize', 'outputSummary')" title="Yalnızca Bu Kısımı Tekrar Üret"><i class="fa-solid fa-rotate-right"></i> Tekrar Üret</button>
+                            </div>
+                            <div class="output-box editable-box" id="outputSummary" contenteditable="false" data-placeholder="Toplantı özeti bekleniyor...">Toplantı özeti bekleniyor...</div>
+                        </div>
+
+                        <!-- Tasks Output -->
+                        <div class="result-block" id="blockTasks">
+                            <div class="block-header">
+                                <h3><i class="fa-solid fa-tasks"></i> Görev Analizi</h3>
+                                <button class="btn-icon-redo" onclick="runSingleTask('extract_tasks', 'outputTasks')" title="Yalnızca Bu Kısımı Tekrar Üret"><i class="fa-solid fa-rotate-right"></i> Tekrar Üret</button>
+                            </div>
+                            <div class="output-box" id="outputTasks">Görev analizi bekleniyor...</div>
+                        </div>
+
+                        <!-- Risk Analysis Output -->
+                        <div class="result-block" id="blockRisks">
+                            <div class="block-header">
+                                <h3><i class="fa-solid fa-shield-cat"></i> Risk Analizi</h3>
+                                <button class="btn-icon-redo" onclick="runSingleTask('analyze_risks', 'outputRisks')" title="Yalnızca Bu Kısımı Tekrar Üret"><i class="fa-solid fa-rotate-right"></i> Tekrar Üret</button>
+                            </div>
+                            <div class="output-box" id="outputRisks">Risk analizi bekleniyor...</div>
+                        </div>
+
+                        <!-- Executive Brief Output -->
+                        <div class="result-block" id="blockExec">
+                            <div class="block-header">
+                                <h3><i class="fa-solid fa-briefcase"></i> Yönetici Özeti</h3>
+                                <button class="btn-icon-redo" onclick="runSingleTask('executive_brief', 'outputExec')" title="Yalnızca Bu Kısımı Tekrar Üret"><i class="fa-solid fa-rotate-right"></i> Tekrar Üret</button>
+                            </div>
+                            <div class="output-box editable-box" id="outputExec" contenteditable="false" data-placeholder="Yönetici özeti bekleniyor...">Yönetici özeti bekleniyor...</div>
+                        </div>
+
+                        <!-- Save to Database Action & Export Tools -->
+                        <div class="save-db-container">
+                            <div class="email-input-group" style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+                                <input type="email" id="meetingEmailRecipient" placeholder="✉️ Opsiyonel: E-posta bildirimi gönder (Örn: ekip@sirket.com)..." style="flex:1; padding:0.65rem 0.9rem; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem; outline:none;">
+                            </div>
+                            <button class="btn btn-success btn-full" id="btnSaveToDb" disabled>
+                                <i class="fa-solid fa-floppy-disk"></i> İNCELEDİM & KONTROL ETTİM - VERİTABANINA KAYDET
+                            </button>
+                            <div class="export-actions-row" style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+                                <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="exportCurrentMeeting('pdf')"><i class="fa-solid fa-file-pdf" style="color:var(--accent-red)"></i> PDF Rapor İndir</button>
+                                <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="exportCurrentMeeting('word')"><i class="fa-solid fa-file-word" style="color:#38bdf8"></i> Word İndir (.docx)</button>
+                                <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="exportCurrentMeeting('markdown')"><i class="fa-solid fa-file-code" style="color:var(--accent-purple)"></i> Markdown (.md)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Full-Width AI Chat Card (Multi-Session ChatGPT Style) -->
+            <div class="card chat-card" style="margin-top: 1.5rem; padding: 0;">
+                <div class="chat-container-layout">
+                    <!-- Left Sidebar: Chat Sessions History -->
+                    <div class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <button class="btn btn-primary btn-full" id="btnNewChatSession">
+                                <i class="fa-solid fa-plus"></i> YENİ SOHBET
+                            </button>
+                        </div>
+                        <div class="chat-sessions-list" id="chatSessionsList">
+                            <div class="chat-session-loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Main Chat Box -->
+                    <div class="chat-main-area">
+                        <div class="chat-card-header">
+                            <h2 id="currentSessionTitle"><i class="fa-solid fa-comments"></i> Yeni Sohbet</h2>
+                            <span class="chat-badge"><i class="fa-solid fa-brain"></i> Ollama (llama3.2) Bağlı</span>
+                        </div>
+
+                        <div class="chat-messages" id="chatLog">
+                            <div class="message system-msg">
+                                <i class="fa-solid fa-robot"></i> Merhaba! Ben yerel Yapay Zeka Toplantı
+                                Asistanınızım. Yukarıdaki toplantı notları, görev dağılımları veya genel teknik konularda soru sorabilirsiniz.
+                            </div>
+                        </div>
+
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput"
+                                placeholder="Mesajınızı yazın (Örn: Bu toplantıdaki en kritik 2 risk nedir?)...">
+                            <button class="btn btn-primary" id="btnSendChat"><i class="fa-solid fa-paper-plane"></i>
+                                Gönder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 3: KAYITLI VERİTABANI (POSTGRESQL) -->
+        <!-- ======================================================== -->
+        <section id="tab-database" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-database"></i> PostgreSQL Kayıtlı Toplantı Verileri</h2>
+                    <button class="btn btn-secondary btn-sm" id="btnRefreshDb"><i class="fa-solid fa-rotate"></i>
+                        Yenile</button>
+                </div>
+
+                <!-- Live Search & Category Filter Toolbar -->
+                <div class="db-filter-toolbar">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchMeetingInput" placeholder="Toplantı başlığı, özet veya notlar içinde canlı ara...">
+                    </div>
+                    <div class="category-filter-wrapper">
+                        <select id="filterCategorySelect" class="custom-select">
+                            <option value="all">🔍 Tüm Kategoriler</option>
+                            <option value="Genel">📌 Genel</option>
+                            <option value="Yazılım">💻 Yazılım & Mimari</option>
+                            <option value="Pazarlama">📢 Pazarlama & Satış</option>
+                            <option value="Siber Güvenlik">🛡️ Siber Güvenlik</option>
+                            <option value="Yönetim">👔 Yönetim & Strateji</option>
+                            <option value="İnsan Kaynakları">👥 İnsan Kaynakları</option>
+                            <option value="Bütçe & Finans">💰 Bütçe & Finans</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Toplantı Başlığı</th>
+                                <th>Kategori</th>
+                                <th>Tarih</th>
+                                <th>Özet</th>
+                                <th>Görev Sayısı</th>
+                                <th>Risk Sayısı</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbTableBody">
+                            <tr>
+                                <td colspan="8" class="text-center">Veriler yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 4: SERVİS DURUMU -->
+        <!-- ======================================================== -->
+        <section id="tab-status" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-network-wired"></i> Sistem Mimarisi ve Servis Durumları</h2>
+                </div>
+
+                <div class="status-grid">
+                    <div class="status-box" id="statusDb">
+                        <div class="status-icon"><i class="fa-solid fa-database"></i></div>
+                        <div class="status-info">
+                            <h3>PostgreSQL Veritabanı</h3>
+                            <p>Port: 5432 | DB: meeting_db</p>
+                            <span class="badge" id="badgeDb">Kontrol Ediliyor...</span>
+                        </div>
+                    </div>
+
+                    <div class="status-box" id="statusOllama">
+                        <div class="status-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="status-info">
+                            <h3>Ollama LLM Engine</h3>
+                            <p>Port: 11434 | Model: llama3.2</p>
+                            <span class="badge" id="badgeOllama">Kontrol Ediliyor...</span>
+                        </div>
+                    </div>
+
+                    <div class="status-box" id="statusN8n">
+                        <div class="status-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                        <div class="status-info">
+                            <h3>n8n Workflow Engine</h3>
+                            <p>Port: 5678 | Webhook Mode</p>
+                            <span class="badge" id="badgeN8n">Kontrol Ediliyor...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lan-info-card">
+                    <h3><i class="fa-solid fa-share-nodes"></i> Ekip ve Yerel Ağ (LAN) Paylaşım Bilgisi</h3>
+                    <p>Aynı yerel ağa (Wi-Fi / LAN) bağlı diğer ekip arkadaşlarınızın bu platforma erişebilmesi için bilgisayarınızın o anki Wi-Fi IP adresini ve port numarasını (<strong>3000</strong>) kullanmaları yeterlidir.</p>
+                    <p style="margin-top: 0.6rem; color: var(--text-secondary); font-size: 0.85rem;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--accent-blue);"></i> 
+                        <strong>Örnek Erişim Formatı:</strong> <code style="background:var(--bg-primary); padding:0.2rem 0.5rem; border-radius:4px; color:var(--accent-green);">http://&lt;bilgisayar-ip-adresiniz&gt;:3000</code>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Viewing Saved Meeting Detail -->
+    <div class="modal" id="meetingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Toplantı Detayı</h2>
+                <button class="close-btn" id="btnCloseModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                Yükleniyor...
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=2"></script>
+</body>
+
+</html>

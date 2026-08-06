@@ -1,0 +1,109 @@
+================================================================================
+📌 ÖRNEK TOPLANTI 1: Mobil Uygulama ve Altyapı Modernizasyonu Toplantısı
+================================================================================
+Tarih: 30 Temmuz 2026
+Katılımcılar: Ahmet (Proje Yöneticisi), Ayşe (Kıdemli Yazılımcı), Mehmet (DevOps Mühendisi), Zeynep (UI/UX Tasarımcısı)
+
+Toplantı Detayları ve Alınan Kararlar:
+- Mevcut mobil uygulamanın performans sorunları nedeniyle React Native kullanılarak sıfırdan yeniden yazılmasına karar verildi.
+- Veritabanı altyapısının eski MySQL sunucusundan PostgreSQL 16 versiyonuna taşınması onaylandı.
+- Müşteri arayüzü tasarımlarında koyu tema (Dark Mode) öncelikli hale getirilecek.
+
+Görev Dağılımı ve Teslim Tarihleri:
+1. Ayşe: PostgreSQL veritabanı şema tasarımını ve migrasyon scriptlerini hazırlayacak. (Teslim Tarihi: 5 Ağustos 2026)
+2. Mehmet: Kubernetes ve Docker tabanlı CI/CD test ortamını kuracak. (Teslim Tarihi: 8 Ağustos 2026)
+3. Zeynep: Figma üzerindeki yeni kullanıcı arayüzü tasarımlarını tamamlayıp onay alacak. (Teslim Tarihi: 3 Ağustos 2026)
+4. Ahmet: Müşteri bilgilendirme bültenini hazırlayıp yayınlayacak. (Teslim Tarihi: 10 Ağustos 2026)
+
+Proje Riskleri ve Olası Darboğazlar:
+- Eski MySQL sunucusundaki 500.000 kaydın aktarımı sırasında veri tutarsızlığı ve veri kaybı yaşanma riski yüksek. Önlem olarak canlıya geçmeden önce 3 defa deneme migrasyonu (dry-run) yapılacak.
+- Apple App Store inceleme sürecinin uzaması durumunda canlıya çıkış tarihi gecikebilir.
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+📌 ÖRNEK TOPLANTI 2: Yapay Zeka Entegrasyonu ve Müşteri Destek Botu Projesi
+================================================================================
+Tarih: 30 Temmuz 2026
+Katılımcılar: Tolga Bey (Mühendislik Direktörü), Gökçe (Yapay Zeka Mühendisi), Berkay (Backend Geliştirici), Selin (Ürün Yöneticisi)
+
+Toplantı Detayları ve Alınan Kararlar:
+- Müşteri destek biletlerinin (tickets) otomatik sınıflandırılması için Ollama üzerinde Llama 3.2 modeli kullanılacaktır.
+- Webhook isteklerinin işlenmesi ve yanıtların PostgreSQL veritabanına otomatik kaydedilmesi için n8n iş akışı otomasyonu kullanılacaktır.
+- Sistemin ön yüzü için ekibin hızlıca kullanabileceği özel bir web arayüzü (Custom Web UI) geliştirilecektir.
+
+Görev Dağılımı ve Teslim Tarihleri:
+1. Gökçe: Ollama için prompt şablonlarını (System Prompts) ve Few-Shot örneklerini hazırlayıp doğrulayacak. (Teslim Tarihi: 4 Ağustos 2026)
+2. Berkay: n8n Webhook ve PostgreSQL bağlantı düğümlerini (nodes) yapılandıracak. (Teslim Tarihi: 6 Ağustos 2026)
+3. Selin: Müşteri destek ekibi için test senaryolarını dokümante edecek. (Teslim Tarihi: 7 Ağustos 2026)
+
+Proje Riskleri ve Olası Darboğazlar:
+- Yerel sunucudaki GPU/RAM kapasitesinin aynı anda 50'den fazla istek geldiğinde yetersiz kalması ve yanıt sürelerinin uzaması riski. Önlem olarak kuyruk (queue) yapısı kurulacak.
+- Yapay zekanın beklenmeyen sorularda yanlış bilgi (hallucination) üretme riski. Önlem olarak yanıtların yanına güven skoru eklenecek.
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+📌 ÖRNEK TOPLANTI 3: Şirket İçi Siber Güvenlik ve ISO 27001 Denetim Hazırlığı
+================================================================================
+Tarih: 30 Temmuz 2026
+Katılımcılar: Can (Bilgi Güvenliği Yöneticisi), Deniz (Sistem Yöneticisi), Burak (İnsan Kaynakları Direktörü)
+
+Toplantı Detayları ve Alınan Kararlar:
+- ISO 27001 denetimi öncesinde tüm şirket içi sistemlerde İki Faktörlü Doğrulama (2FA) kullanımı zorunlu hale getirilmiştir.
+- Sunucu ve veritabanı yedekleme periyotları haftalık periyottan günlük periyoda çekilmiştir.
+
+Görev Dağılımı ve Teslim Tarihleri:
+1. Deniz: Tüm VPN ve sunucu girişlerinde 2FA zorunluluğunu aktif edecek. (Teslim Tarihi: 10 Ağustos 2026)
+2. Burak: Şirket personeline yönelik oltalama (phishing) ve şifre güvenliği eğitimini organize edecek. (Teslim Tarihi: 12 Ağustos 2026)
+3. Can: Güvenlik politikaları dokümanını güncelleyip üst yönetimin onayına sunacak. (Teslim Tarihi: 8 Ağustos 2026)
+
+Proje Riskleri ve Olası Darboğazlar:
+- 2FA geçiş sürecinde personelin giriş problemleri yaşaması ve IT Destek ekibinde aşırı yoğunluk oluşması riski. Önlem olarak kademeli geçiş yapılacak.
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+📌 ÖRNEK TOPLANTI 4: Haftalık Satış Değerlendirmesi ve Bütçe Planlama Notları (Doğal / Ham Not)
+================================================================================
+Tarih: 4 Ağustos 2026 salı saat 10:00
+Not alan: Ahmet
+Katılanlar: Ahmet (Satış), Deniz (İK), Selin (Pazarlama), Hakan (Muhasebe)
+
+Ahmet bey açılışı yaptı satışlar geçen aya göre ege ve akdenizde %15 düşmüş rakip firma indirim yapmış.
+Selin google reklamlarını durdurup instagram influencer kampanyasına geçelim diyor bütçe 50bin TL ama hakan bey bütçe aşımı olur genel müdür onayı lazım dedi.
+Deniz kıdemli backendçi ve devops için 2 yeni ilan çıkacak haftaya pazartesi ik görüşmeleri başlıyor dedi.
+
+Alınan Karar: Reklam bütçesi artırımı onay için genel müdüre sunulacak.
+
+Görev Dağılımı:
+- Selin influencer tekliflerini pazartesiye kadar toplayacak.
+- Deniz ilanları 10 ağustosa kadar çıkacak.
+- Hakan finansal raporu cuma akşamına kadar ahmet beye atacak.
+
+Olası Risk: Reklam kaydırması gecikirse ağustos satış hedefi tutmayabilir.
+
+--------------------------------------------------------------------------------
+
+
+================================================================================
+📌 ÖRNEK TOPLANTI 5: Canlıya Çıkış Öncesi Acil Altyapı ve Kriz Toplantısı (Doğal / Kriz Notu)
+================================================================================
+Cuma günkü lansman öncesi acil durum toplantısı (3 Ağustos 2026)
+Katılanlar: Erdem (Backend), Ayşe (Frontend), Caner (Güvenlik), Zeynep (PO)
+
+Dün akşam yapılan yük testinde ödeme servisi 500 hatası verdi erdem bakıyor. Ödeme altyapısı çalışmadan canlıya çıkamayız riski çok büyük lansman ertelenebilir.
+Ayşe frontend tarafında son 2 ekran kaldığını perşembe günü bitireceğini söyledi ama erdemin ödeme apisini beklemesi gerekiyor.
+Caner hoca vpn ve ssl sertifikalarının süresinin dolmak üzere olduğunu fark etti yarın akşama kadar yenilenmezse tüm test ortamı kilitlenecek.
+
+Kararlar:
+- Lansman tarihi perşembe akşamı tekrar değerlendirilecek.
+
+Görevler:
+1. Erdem ödeme servisi bugfix teslim: 5 ağustos.
+2. Caner ssl yenileme teslim: 4 ağustos yarın.
+3. Zeynep yönetime gecikme ihtimalini bildirecek teslim: bugün.
+

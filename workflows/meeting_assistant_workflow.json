@@ -1,0 +1,451 @@
+{
+  "name": "AI Meeting Assistant - Smart Routing Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meeting-notes",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-input",
+      "name": "Webhook - Meeting Input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [100, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract body data - handles both webhook v1 ($json.body) and v2 ($json) formats\nconst body = $json.body || $json;\nreturn [{\n  json: {\n    taskType: body.taskType || 'summarize',\n    text: body.text || '',\n    title: body.title || '',\n    systemPrompt: body.systemPrompt || 'Toplantı notlarını özetle.'\n  }\n}];"
+      },
+      "id": "normalize-input",
+      "name": "Normalize Input Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 400]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": ""
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.taskType }}",
+                    "rightValue": "summarize",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Özet"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": ""
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.taskType }}",
+                    "rightValue": "extract_tasks",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Görevler"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": ""
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.taskType }}",
+                    "rightValue": "analyze_risks",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Riskler"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": ""
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.taskType }}",
+                    "rightValue": "executive_brief",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Yönetici"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "switch-router",
+      "name": "Route by Task Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [560, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2', messages: [{role: 'system', content: $('Normalize Input Data').item.json.systemPrompt}, {role: 'user', content: $('Normalize Input Data').item.json.text}], stream: false }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "ollama-summarizer",
+      "name": "Ollama Agent 1 - Summarizer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [820, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2', messages: [{role: 'system', content: $('Normalize Input Data').item.json.systemPrompt}, {role: 'user', content: $('Normalize Input Data').item.json.text}], stream: false }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "ollama-tasks",
+      "name": "Ollama Agent 2 - Task Extractor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [820, 380]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2', messages: [{role: 'system', content: $('Normalize Input Data').item.json.systemPrompt}, {role: 'user', content: $('Normalize Input Data').item.json.text}], stream: false }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "ollama-risks",
+      "name": "Ollama Agent 3 - Risk Analyzer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [820, 580]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2', messages: [{role: 'system', content: $('Normalize Input Data').item.json.systemPrompt}, {role: 'user', content: $('Normalize Input Data').item.json.text}], stream: false }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "ollama-executive",
+      "name": "Ollama Agent 4 - Executive Assistant",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [820, 780]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3.2', messages: [{role: 'system', content: $('Normalize Input Data').item.json.systemPrompt}, {role: 'user', content: $('Normalize Input Data').item.json.text}], stream: false }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "ollama-fallback",
+      "name": "Ollama Fallback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [820, 960]
+    },
+    {
+      "parameters": {
+        "jsCode": "// AI çıktısını standart formatta döndür (chat API formatı)\nconst aiResponse = $input.first().json;\nconst inputData = $('Normalize Input Data').item.json;\n\n// Chat API: yanıt message.content içinde gelir\nlet rawResult = '';\nif (aiResponse.message && aiResponse.message.content) {\n  rawResult = aiResponse.message.content;\n} else if (aiResponse.response) {\n  rawResult = aiResponse.response;\n}\n\n// Sunucu tarafı temizlik: echoed notlar bloğunu sıyır\nrawResult = rawResult.replace(/<think>[\\s\\S]*?<\\/think>/gi, '');\nif (rawResult.toLowerCase().includes('<notlar>')) {\n  rawResult = rawResult.split(/<notlar>/i)[0];\n}\nrawResult = rawResult.replace(/<\\/notlar>/gi, '');\nrawResult = rawResult.trim();\n\nreturn [{\n  json: {\n    success: true,\n    taskType: inputData.taskType || 'unknown',\n    result: rawResult,\n    source: 'n8n Workflow Engine',\n    model: aiResponse.model || 'llama3.2',\n    processingTime: aiResponse.total_duration || null\n  }\n}];"
+      },
+      "id": "format-response",
+      "name": "Format AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meeting-email",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-email",
+      "name": "Webhook - Email Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [100, 1150]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\nconst title = body.title || 'Toplantı Raporu';\nconst recipient = body.recipient || 'Belirtilmedi';\nconst summary = body.summary || 'Özet bulunmuyor.';\nconst execSummary = body.executive_summary || '';\nconst tasks = Array.isArray(body.tasks) ? body.tasks : [];\nconst risks = Array.isArray(body.risks) ? body.risks : [];\n\nlet tasksHtml = tasks.map(t => `<li><strong>${t.task_description || t.description || ''}</strong> - Sorumlu: ${t.assignee || 'Atanmadı'} (${t.status || 'Yapılacak'})</li>`).join('');\nlet risksHtml = risks.map(r => `<li><strong>${r.risk_description || r.description || ''}</strong> (Etki: ${r.impact_level || 'Orta'}) - Önlem: ${r.mitigation_plan || '-'}</li>`).join('');\n\nconst htmlContent = `\n  <div style=\"font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 10px;\">\n    <h2 style=\"color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;\">📌 ${title}</h2>\n    <p><strong>Alıcı:</strong> ${recipient}</p>\n    <h3>📝 Toplantı Özeti</h3>\n    <p style=\"background: #f8fafc; padding: 12px; border-radius: 6px;\">${summary}</p>\n    ${execSummary ? `<h3>👔 Yönetici Özeti</h3><p style=\"background: #f1f5f9; padding: 12px; border-radius: 6px;\">${execSummary}</p>` : ''}\n    <h3>📋 Görevler (${tasks.length})</h3>\n    <ul>${tasksHtml || '<li>Görev bulunmuyor.</li>'}</ul>\n    <h3>⚠️ Risk Analizi (${risks.length})</h3>\n    <ul>${risksHtml || '<li>Risk bulunmuyor.</li>'}</ul>\n    <hr style=\"margin-top: 20px; border: 0; border-top: 1px solid #e2e8f0;\">\n    <p style=\"font-size: 12px; color: #64748b;\">Bu e-posta AI Meeting Assistant n8n Otomasyon Akışı tarafından otomatik gönderilmiştir.</p>\n  </div>\n`;\n\nreturn [{\n  json: {\n    success: true,\n    recipient,\n    title,\n    subject: `[Toplantı Raporu] ${title}`,\n    html: htmlContent,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-email-html",
+      "name": "Format Email HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [340, 1150]
+    },
+    {
+      "parameters": {
+        "fromEmail": "meeting-assistant@company.local",
+        "toEmail": "={{ $json.recipient }}",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "send-email-node",
+      "name": "Send Email Node (SMTP)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [580, 1150]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'E-posta otomasyon akışı çalıştı.', recipient: $json.toEmail || $json.recipient }) }}",
+        "options": {}
+      },
+      "id": "respond-email-webhook",
+      "name": "Respond to Email Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [820, 1150]
+    }
+  ],
+  "connections": {
+    "Webhook - Meeting Input": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input Data": {
+      "main": [
+        [
+          {
+            "node": "Route by Task Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Task Type": {
+      "main": [
+        [
+          {
+            "node": "Ollama Agent 1 - Summarizer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ollama Agent 2 - Task Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ollama Agent 3 - Risk Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ollama Agent 4 - Executive Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ollama Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Agent 1 - Summarizer": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Agent 2 - Task Extractor": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Agent 3 - Risk Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Agent 4 - Executive Assistant": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Fallback": {
+      "main": [
+        [
+          {
+            "node": "Format AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format AI Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Email HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email HTML": {
+      "main": [
+        [
+          {
+            "node": "Send Email Node (SMTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Node (SMTP)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Email Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "meeting-assistant"
+  },
+  "tags": []
+}
