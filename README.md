@@ -188,5 +188,10 @@ Sistemi hızlıca test etmek için iki yöntem kullanabilirsiniz:
 
 ## 👤 Geliştirici
 
-**Gökçe Mehmet**  
+**Mehmet Gökçe**  
 GitHub: [@mmehmetgokce](https://github.com/mmehmetgokce)
+
+---
+
+> **💡 Port Çakışması Hakkında Not:**  
+> Bilgisayarınızda `3000`, `5432`, `5678` veya `5050` portlarından biri başka bir uygulama tarafından kullanılıyorsa, `docker-compose.yml` dosyasındaki sol tarafta yer alan host portunu (örneğin `"8080:3000"`) değiştirerek çakışmayı anında çözebilirsiniz.
