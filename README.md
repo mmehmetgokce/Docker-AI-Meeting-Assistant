@@ -1,28 +1,40 @@
-# 🚀 Docker Tabanlı AI Meeting Assistant (Yapay Zeka Toplantı Asistanı)
+# 🚀 Docker Tabanlı AI Meeting Assistant (Yapay Zeka Toplantı ve Karar Destek Platformu)
 
-Bu proje; **Docker**, **Docker Compose**, **Ollama**, **Open WebUI**, **n8n** ve **PostgreSQL** teknolojilerini kullanarak yalnızca prompt ve iş akışı odaklı çalışan yerel bir **Yapay Zeka Toplantı Asistanı** sunar.
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)
+![n8n](https://img.shields.io/badge/n8n-FF6584?style=for-the-badge&logo=n8n&logoColor=white)
+
+Bu proje; **Docker**, **Docker Compose**, **Node.js/Express**, **Ollama (Llama 3.2)**, **n8n** ve **PostgreSQL** teknolojilerini kullanarak kurum içi toplantı notlarını analiz eden, görev ve riskleri tespit eden, kurumsal raporlar üreten yerel bir **Yapay Zeka Toplantı Asistanı ve Karar Destek Platformudur**.
 
 ---
 
-## 🎯 Projenin Amacı
+## 🎯 Projenin Amacı ve Öne Çıkan Özellikler
 
-Toplantı notlarının tek bir merkezden işlenerek otomatik olarak aşağıdaki çıktıların üretilmesi ve veritabanında saklanması hedeflenmektedir:
-- 📌 **Toplantı Özeti:** Genel değerlendirme ve alınan ana kararlar.
-- 📋 **Görevler ve Sorumlular (Task List):** Yapılacak işler, sorumlular ve teslim tarihleri.
-- ⚠️ **Risk Analizi:** Projedeki olası darboğazlar, teknik ve operasyonel riskler.
-- 👔 **Yönetici Özeti (Executive Brief):** Üst düzey yöneticilere özel hızlı karar desteği.
+Toplantı notlarının tek bir merkezden işlenerek otomatik olarak aşağıdaki çıktıların üretilmesi, veritabanında saklanması ve kurumsal formatlarda dışa aktarılması hedeflenmektedir:
+
+- 📌 **Toplantı Özeti:** Toplantının ana konusu, genel akışı ve alınan kritik kararlar.
+- 📋 **Görev Analizi (Task Extractor):** Yapılacak işler, sorumlular, teslim tarihleri ve durum takibi (Yapılacak / Yapılıyor / Tamamlandı).
+- ⚠️ **Risk Analizi (Risk Analyzer):** Projedeki olası darboğazlar, etki seviyeleri (Yüksek / Orta / Düşük) ve önlem planları.
+- 👔 **Yönetici Özeti (Executive Brief):** Üst düzey yöneticilere özel 2 cümlelik özet, alınan kararlar ve onay gereken konular.
+- 📄 **Kurumsal Rapor Dışa Aktarma (Export Engine):** Analiz sonuçlarını **PDF** (Kurumsal Antetli & Yazdırılabilir), **Word (.docx)** veya **Markdown (.md)** formatlarında tek tıkla indirme.
+- 🔍 **Canlı Arama ve Kategori Filtreleme:** Geçmiş toplantılarda anlık kelime araması ve kategorilere göre filtreleme (*Yazılım*, *Pazarlama*, *Siber Güvenlik*, *Yönetim*, *İnsan Kaynakları*, *Bütçe*).
+- ☀️ **Koyu / Aydınlık Tema (Light & Dark Mode):** Kullanıcı tercihine göre anında tema değişimi.
+- 💬 **Çoklu Sohbet Oturumu (ChatGPT Style AI Chat):** Toplantı notları ve kararlar üzerinde soru sorabileceğiniz bağımsız sohbet oturumları.
+- 📧 **n8n Otomasyonu ve E-posta Bildirimi:** Analiz sonuçlarının istenen alıcılara e-posta bildirimi olarak gönderilmesi.
 
 ---
 
 ## 🛠️ Mimari ve Kullanılan Teknolojiler
 
 ```text
-[ Web UI & Express Backend (Port 3000) ]  ───►  [ Ollama LLM (Port 11434) ]
-                                                            ▲
-                                                            │ API Connection
-[ n8n Workflow (Port 5678) ] ───────────────────────────────┼─────────────► [ PostgreSQL DB (Port 5432) ]
-                                                                                   ▲
-[ pgAdmin UI (Port 5050) ] ────────────────────────────────────────────────────────┘
+[ Custom Web UI & Express Gateway (Port 3000) ]  ───►  [ Ollama LLM (Port 11434) ]
+                                                                     ▲
+                                                                     │ API Connection
+[ n8n Workflow Engine (Port 5678) ] ─────────────────────────────────┼─────────────► [ PostgreSQL DB (Port 5432) ]
+                                                                                            ▲
+[ pgAdmin Management UI (Port 5050) ] ──────────────────────────────────────────────────────┘
 ```
 
 | Servis | Port | Açıklama |
@@ -41,13 +53,19 @@ Toplantı notlarının tek bir merkezden işlenerek otomatik olarak aşağıdaki
 .
 ├── docker-compose.yml       # Konteyner orkestrasyon dosyası
 ├── README.md                # Proje dokümantasyonu
+├── .gitignore               # Git yoksayma kuralları
+├── ornek_toplanti_notlari.txt # Hızlı test ve demo için örnek not dosyası
 ├── app/                     # Web Arayüzü ve Backend Uygulaması (Node.js/Express)
-│   ├── Dockerfile           # App Docker imaj yapılandırması
-│   ├── package.json         # Bağımlılıklar
+│   ├── Dockerfile           # Node.js Docker imaj yapılandırması
+│   ├── .dockerignore        # Docker yoksayma kuralları
+│   ├── package.json         # Bağımlılıklar (Express, Pg, Cors, Dotenv)
 │   ├── server.js            # Express API Gateway ve Veritabanı Servisleri
 │   └── public/              # Frontend Arayüzü (HTML, CSS, JS)
+│       ├── app.js           # Dinamik istemci mantığı, arama & dışa aktarma
+│       ├── index.html       # Kullanıcı arayüzü
+│       └── styles.css       # Tasarım sistemi ve Light/Dark tema CSS
 ├── database/
-│   └── init.sql             # PostgreSQL şema başlangıç scripti
+│   └── init.sql             # PostgreSQL başlangıç şema scripti (Tablolar & İndeksler)
 ├── prompts/                 # AI Agent Sistem Prompt'ları
 │   ├── 01_meeting_summarizer.md
 │   ├── 02_task_extractor.md
@@ -55,16 +73,31 @@ Toplantı notlarının tek bir merkezden işlenerek otomatik olarak aşağıdaki
 │   └── 04_manager_assistant.md
 ├── workflows/               # n8n İş Akışı şablonları
 │   └── meeting_assistant_workflow.json
-└── screenshots/             # Çalışır duruma ait ekran görüntüleri
+└── screenshots/             # Uygulama ekran görüntüleri
 ```
 
 ---
 
 ## 🚀 Hızlı Başlangıç (Kurulum Rehberi)
 
-### 1. Servisleri Çalıştırma
+### Ön Gereksinimler
+- Bilgisayarınızda **Docker** ve **Docker Desktop** kurulu ve çalışır durumda olmalıdır.
+- Terminal veya Komut İstemcisi erişimi.
 
-Terminal veya komut satırında proje dizinindeyken aşağıdaki komutu çalıştırın:
+---
+
+### 1. Adım: Projeyi Klonlayın
+
+```bash
+git clone https://github.com/mmehmetgokce/Docker-AI-Meeting-Assistant.git
+cd Docker-AI-Meeting-Assistant
+```
+
+---
+
+### 2. Adım: Servisleri Çalıştırın
+
+Tüm servisleri (Web App, PostgreSQL, pgAdmin, Ollama, n8n) arka planda başlatmak için:
 
 ```bash
 docker compose up -d
@@ -76,35 +109,41 @@ Servislerin durumunu kontrol etmek için:
 docker compose ps
 ```
 
-### 2. Ollama İçerisine Yapay Zeka Modeli Yükleme
+---
 
-Ollama servisine hafif ve Türkçe/İngilizce performansı yüksek olan `llama3.2` modelini indirin:
+### 3. Adım: Yapay Zeka Modelini (Ollama) İndirin
+
+Ollama servisine Türkçe/İngilizce performansı yüksek ve hafif olan `llama3.2` modelini indirin:
 
 ```bash
 docker exec -it meeting_assistant_ollama ollama pull llama3.2
 ```
 
-*(Opsiyonel)* Alternatif olarak `qwen2.5` veya `mistral` modelleri de yüklenebilir:
+*(Opsiyonel)* Alternatif modeller eklemek isterseniz:
 ```bash
 docker exec -it meeting_assistant_ollama ollama pull qwen2.5
 ```
 
 ---
 
-## 🤖 AI Agent Prompt'larının Kullanımı (Web Arayüzü)
+### 4. Adım: Web Arayüzüne Erişin
 
-1. Tarayıcınızdan `http://localhost:3000` adresine gidin.
-2. Web arayüzündeki **Toplantı Notları** sekmesinden notlarınızı girin ve işlem türünü seçin (Özet Çıkar, Görevleri Çıkar, Risk Analizi Yap, Yönetici Özeti).
-3. Arka planda Node.js uygulaması `prompts/` dizinindeki `.md` dosyalarından ilgili sistem prompt'unu dinamik olarak okuyarak Ollama ve n8n servislerine iletir ve sonuçları veritabanına kaydeder.
+Tarayıcınızdan aşağıdaki adrese gidin:
+👉 **`http://localhost:3000`**
+
+- **Toplantı Notları Girişi:** Başlık yazın, kategoriyi seçin ve notlarınızı girin.
+- **Tümünü Analiz Et:** Tek tıkla özet, görevler, riskler ve yönetici özetini üretin.
+- **Düzenle ve Kaydet:** Üretilen metinleri tıklayarak düzenleyebilir, veritabanına kaydedebilirsiniz.
+- **Rapor İndir:** PDF, Word (.docx) veya Markdown (.md) olarak dışa aktarabilirsiniz.
 
 ---
 
-## 🔄 n8n İş Akışının Aktarılması (Import Workflow)
+### 5. Adım: n8n İş Akışını İçeri Aktarın (Opsiyonel)
 
 1. Tarayıcıdan `http://localhost:5678` adresine gidin.
-2. Sol menüden **Workflows -> Import from File** seçeneğini tıklayın.
-3. Projedeki `workflows/meeting_assistant_workflow.json` dosyasını seçip içeri aktarın.
-4. **PostgreSQL Credentials** ayarlarında veritabanı bağlantı bilgilerini tanımlayın:
+2. **Workflows -> Import from File** seçeneğini tıklayın.
+3. Projedeki `workflows/meeting_assistant_workflow.json` dosyasını içeri aktarın.
+4. **PostgreSQL Credentials** ayarlarında veritabanı bağlantı bilgilerini girin:
    - **Host:** `postgres`
    - **Database:** `meeting_db`
    - **User:** `meeting_user`
@@ -113,24 +152,41 @@ docker exec -it meeting_assistant_ollama ollama pull qwen2.5
 
 ---
 
-## 🗄️ PostgreSQL & pgAdmin Bağlantısı
+### 6. Adım: pgAdmin Veritabanı Yönetimi
 
-- **pgAdmin Arayüzü:** `http://localhost:5050`
+- **Arayüz:** `http://localhost:5050`
 - **Giriş Bilgileri:** `admin@admin.com` / `admin`
 - **Sunucu Ekleme (Add Server):**
   - **Host Name:** `postgres`
   - **Port:** `5432`
-  - **Maintenance database:** `meeting_db`
+  - **Maintenance DB:** `meeting_db`
   - **Username:** `meeting_user`
   - **Password:** `meeting_password`
 
 ---
 
-## 📊 Veritabanı Tabloları
+## 🧪 Test Etme ve Hızlı Demo
 
-`database/init.sql` scripti otomatik çalışarak şu tabloları oluşturur:
-- `meetings`: Ham toplantı başlığı ve notları.
+Sistemi hızlıca test etmek için iki yöntem kullanabilirsiniz:
+1. **Arayüzdeki Örnek Yükleyiciler:** Web arayüzünde *"Örnek Yükle"* butonlarına (📌 1: Mobil & Altyapı, 📌 2: Yapay Zeka Botu vb.) tıklayarak hazır senaryoları yükleyebilirsiniz.
+2. **Örnek Not Dosyası:** Proje dizininde yer alan `ornek_toplanti_notlari.txt` dosyasındaki metinleri kopyalayıp arayüze yapıştırabilirsiniz.
+
+---
+
+## 📊 Veritabanı Tablo Yapısı
+
+`database/init.sql` scripti ilk kurulumda otomatik çalışarak aşağıdaki tabloları ve performans indekslerini oluşturur:
+
+- `meetings`: Ham toplantı başlığı, kategorisi ve notları.
 - `meeting_summaries`: Üretilen özetler ve alınan kararlar.
 - `tasks`: Görev tanımı, sorumlusu, teslim tarihi ve durumu.
 - `risk_analyses`: Olası riskler, etki seviyeleri ve önlem planları.
 - `executive_summaries`: Yöneticiler için hazırlanan üst düzey raporlar.
+- `chat_sessions` & `chat_messages`: Çoklu AI sohbet geçmişi ve mesajları.
+
+---
+
+## 👤 Geliştirici
+
+**Gökçe Mehmet**  
+GitHub: [@mmehmetgokce](https://github.com/mmehmetgokce)
