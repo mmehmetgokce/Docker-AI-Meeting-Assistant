@@ -78,7 +78,40 @@ Toplantı notlarının tek bir merkezden işlenerek otomatik olarak aşağıdaki
 
 ---
 
+## 📸 Ekran Görüntüleri
+
+### Toplantı Analizi Sayfası
+| Koyu Tema | Açık Tema |
+|:---------:|:---------:|
+| ![Koyu Tema](screenshots/01_analysis_page_dark_theme.png) | ![Açık Tema](screenshots/02_analysis_page_light_theme.png) |
+
+### Yapay Zeka Analiz Çıktısı (Toplantı Özeti)
+![Toplantı Özeti](screenshots/03_ai_meeting_summary.png)
+
+### Kayıtlı Toplantı Verileri
+| Koyu Tema | Açık Tema |
+|:---------:|:---------:|
+| ![Kayıtlı Veriler Koyu](screenshots/04_saved_meetings_search_filter_dark_theme.png) | ![Kayıtlı Veriler Açık](screenshots/05_saved_meetings_search_filter_light_theme.png) |
+
+### Rapor Detayı ve Dışa Aktarma (PDF / Word / Markdown)
+| Dışa Aktarma Modal | PDF Rapor Önizleme |
+|:-------------------:|:------------------:|
+| ![Export Modal](screenshots/06_meeting_detail_export_modal.png) | ![PDF Rapor](screenshots/07_exported_report_preview.png) |
+
+### Yapay Zeka Sohbet (ChatGPT Tarzı)
+| Toplantı Hakkında Soru-Cevap | Koyu Tema |
+|:-----------------------------:|:---------:|
+| ![AI Sohbet](screenshots/08_ai_chat_conversation.png) | ![AI Koyu Tema](screenshots/09_ai_chat_dark_theme.png) |
+
+### Altyapı: n8n Workflow, Docker & PostgreSQL
+| n8n İş Akışı (Analiz + E-posta) | Docker Konteynerler | pgAdmin Veritabanı |
+|:--------------------------------:|:-------------------:|:------------------:|
+| ![n8n Workflow](screenshots/10_n8n_workflow_full.png) | ![Docker](screenshots/11_docker_containers.png) | ![pgAdmin](screenshots/12_pgadmin_database.png) |
+
+---
+
 ## 🚀 Hızlı Başlangıç (Kurulum Rehberi)
+
 
 ### Ön Gereksinimler
 - Bilgisayarınızda **Docker** ve **Docker Desktop** kurulu ve çalışır durumda olmalıdır.
